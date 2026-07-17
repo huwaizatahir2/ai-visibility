@@ -1,0 +1,67 @@
+---
+# Deploy (or redeploy) a specific image tag. Run: ansible-playbook deploy.yml -e app_tag=vX.Y.Z
+- name: Deploy ai-visibility
+  hosts: app
+  become: true
+
+  vars:
+    compose_file: "{{ app_dir }}/docker-compose.production.yml"
+
+  tasks:
+    - name: Ensure app directory exists
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: deploy
+        group: deploy
+        mode: "0750"
+
+    - name: Copy production compose file
+      ansible.builtin.copy:
+        src: "../../docker-compose.production.yml"
+        dest: "{{ compose_file }}"
+        owner: deploy
+        group: deploy
+        mode: "0640"
+
+    - name: Render production .env from vault vars
+      ansible.builtin.template:
+        src: templates/env.j2
+        dest: "{{ app_dir }}/.env"
+        owner: deploy
+        group: deploy
+        mode: "0600"
+
+    - name: Log in to GHCR
+      community.docker.docker_login:
+        registry_url: ghcr.io
+        username: "{{ ghcr_username | default(omit) }}"
+        password: "{{ ghcr_token | default(omit) }}"
+      when: ghcr_token is defined
+
+    - name: Pull the target image
+      community.docker.docker_image:
+        name: "{{ app_image }}:{{ app_tag }}"
+        source: pull
+
+    - name: Start the stack
+      ansible.builtin.command:
+        cmd: docker compose --env-file {{ app_dir }}/.env -f {{ compose_file }} up -d
+      environment:
+        AI_VISIBILITY_IMAGE: "{{ app_image }}:{{ app_tag }}"
+      changed_when: true
+
+    - name: Run database migrations
+      ansible.builtin.command:
+        cmd: docker compose --env-file {{ app_dir }}/.env -f {{ compose_file }} run --rm django python manage.py migrate --no-input
+      changed_when: true
+
+    - name: Health check
+      ansible.builtin.uri:
+        url: "https://{{ app_domain }}/healthz/"
+        status_code: 200
+        validate_certs: true
+      register: health
+      retries: 10
+      delay: 6
+      until: health.status == 200

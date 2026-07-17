@@ -5,6 +5,7 @@ import typing
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 
 if typing.TYPE_CHECKING:
     from allauth.socialaccount.models import SocialLogin
@@ -25,6 +26,24 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
         sociallogin: SocialLogin,
     ) -> bool:
         return getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
+
+    def pre_social_login(
+        self,
+        request: HttpRequest,
+        sociallogin: SocialLogin,
+    ) -> None:
+        """Restrict social sign-in to allowed email domains, if configured.
+
+        Empty ``ALLOWED_OAUTH_DOMAINS`` means open (the open-source default).
+        """
+        allowed = getattr(settings, "ALLOWED_OAUTH_DOMAINS", [])
+        if not allowed:
+            return
+        email = (sociallogin.user.email or "").lower()
+        domain = email.rpartition("@")[2]
+        if domain not in allowed:
+            msg = "Your email domain is not allowed to sign in here."
+            raise PermissionDenied(msg)
 
     def populate_user(
         self,

@@ -8,6 +8,14 @@ AI Visibility answers three questions about your team's use of AI coding tools (
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+## Demo
+
+A walkthrough of the DX Core 4 overview, the Utilization / Impact / Cost tabs (speed always paired with its quality counterweight), the monthly ROI report, and team settings:
+
+![AI Visibility walkthrough](docs/assets/demo.gif)
+
+▶️ **[Watch the full walkthrough (MP4)](docs/assets/demo.mp4)** · reproduce it locally with `python manage.py seed_demo` (see [Quickstart](#quickstart-local-docker)).
+
 ---
 
 ## Why
@@ -25,7 +33,7 @@ Adopting an AI coding tool without measurement leaves you with anecdote ("it fee
 ## Features
 
 - **Multi-tenant** — one deployment, many teams. Each team configures its own integrations; data is strictly team-scoped.
-- **Pluggable collectors** — scheduled jobs pull metrics from **GitHub** (PR throughput, cycle time, revert rate, % AI-assisted), **New Relic** (Claude Code OpenTelemetry usage/cost, change-failure signals), and **SonarQube** (new-code quality gate). Adding a source is a subclass + registration.
+- **Pluggable collectors** — scheduled jobs pull metrics from **GitHub** (PR throughput, cycle time, revert rate, % AI-assisted), **New Relic** (Claude Code OpenTelemetry usage/cost, plus DORA change-failure rate and lead time from Change Tracking deployments + incidents), **SonarQube** (new-code quality gate), and **Jira** (work-item throughput and lead time). Adding a source is a subclass + registration.
 - **In-app surveys** — DX Core 4 quarterly, DXI-lite (14 drivers), and pulse checks. **Anonymous by construction** — responses carry no link to the respondent.
 - **Baseline capture** — freeze your "before AI" numbers in one click; every chart shows the delta against it.
 - **Guardrails enforced in code** — no per-individual view exists; aggregates render only when a team has at least *N* contributing members (default 5); speed metrics render only beside their paired quality metric.
@@ -37,7 +45,8 @@ Adopting an AI coding tool without measurement leaves you with anecdote ("it fee
 Celery Beat ─► Collectors ─► MetricSnapshot (Postgres time-series) ─► Dashboards
    (weekly)     GitHub          ▲                                       (HTMX + Chart.js)
                 New Relic        │
-                SonarQube    Surveys ─► aggregated answers
+                SonarQube        │
+                Jira         Surveys ─► aggregated answers
 ```
 
 Django 6 monolith (server-rendered, HTMX + Chart.js + Bootstrap 5 — no SPA build step). Six domain apps:
@@ -68,9 +77,14 @@ docker compose -f docker-compose.local.yml build
 docker compose -f docker-compose.local.yml up -d
 docker compose -f docker-compose.local.yml run --rm django python manage.py migrate
 docker compose -f docker-compose.local.yml run --rm django python manage.py createsuperuser
+
+# Optional: load the demo team from the walkthrough above (metrics, baseline, integrations, survey)
+docker compose -f docker-compose.local.yml run --rm django python manage.py seed_demo
 ```
 
 App: <http://localhost:8000> · Mailpit (emails): <http://localhost:8025>
+
+After `seed_demo`, sign in as **demo@arbisoft.com** / **DevEx-2026-demo** and open `/dashboards/xiangqi/`.
 
 Run the tests:
 

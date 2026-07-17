@@ -1,0 +1,8 @@
+{% extends "dashboards/_base.html" %}
+
+{% block dashboard %}
+  <p class="text-muted">Every speed metric is shown beside its quality counterweight — the golden rule.</p>
+  {% for panel in panels %}
+    {% include "dashboards/_paired_panel.html" %}
+  {% endfor %}
+{% endblock dashboard %}

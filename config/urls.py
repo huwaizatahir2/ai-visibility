@@ -6,8 +6,11 @@ from django.urls import path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 
+from config.health import healthz
+
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("healthz/", healthz, name="healthz"),
     path(
         "about/",
         TemplateView.as_view(template_name="pages/about.html"),
@@ -18,8 +21,14 @@ urlpatterns = [
     # User management
     path("users/", include("ai_visibility.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
-    # ...
+    # ai-visibility apps
+    path("teams/", include("ai_visibility.teams.urls", namespace="teams")),
+    path(
+        "dashboards/",
+        include("ai_visibility.dashboards.urls", namespace="dashboards"),
+    ),
+    path("reports/", include("ai_visibility.reports.urls", namespace="reports")),
+    path("surveys/", include("ai_visibility.surveys.urls", namespace="surveys")),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]

@@ -1,0 +1,4 @@
+<canvas class="av-chart mt-2"
+        height="120"
+        data-points='[{% for p in series.points %}{"x": "{{ p.period }}", "y": {{ p.value }} }{% if not forloop.last %},{% endif %}{% endfor %}]'
+        data-label="{{ series.name }}"></canvas>

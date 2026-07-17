@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ team.name }} · Monthly report{% endblock title %}
+{% block content %}
+  <div class="container py-4" style="max-width: 900px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="h4 mb-0">{{ team.name }} — Monthly AI Impact Report</h1>
+      <button class="btn btn-sm btn-outline-secondary d-print-none"
+              onclick="window.print()">Print / PDF</button>
+    </div>
+    {% if too_small %}
+      <div class="alert alert-warning">Group too small (min {{ min_size }} members) — metrics withheld to protect individuals.</div>
+    {% else %}
+      <h2 class="h6 text-uppercase text-muted">DX Core 4 headline</h2>
+      <div class="row mb-4">
+        {% for m in headline %}
+          <div class="col-6 col-md-4 mb-2">
+            <div class="border rounded p-2 h-100">
+              <div class="small text-muted">{{ m.name }}</div>
+              <div class="fs-5 fw-semibold">
+                {% with last=m.points|last %}{% if last %}{{ last.value }}{% else %}—{% endif %}{% endwith %}
+                <span class="small text-muted">{{ m.unit }}</span>
+              </div>
+              {% if m.delta_pct is not None %}<div class="small">Δ {{ m.delta_pct }}% vs baseline</div>{% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <h2 class="h6 text-uppercase text-muted">Quality guardrails (KR5)</h2>
+      <table class="table table-sm mb-4">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Latest</th>
+            <th>Δ vs baseline</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for g in guardrails %}
+            <tr>
+              <td>{{ g.name }}</td>
+              <td>{% with last=g.points|last %}{% if last %}{{ last.value }} {{ g.unit }}{% else %}—{% endif %}{% endwith %}</td>
+              <td>{% if g.delta_pct is not None %}{{ g.delta_pct }}%{% else %}—{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+    <div class="row">
+      <div class="col-md-6">
+        <h2 class="h6 text-uppercase text-muted">ROI</h2>
+        <ul class="list-unstyled">
+          <li>Monthly value of time saved: <strong>${{ roi.monthly_value }}</strong></li>
+          <li>Net gain (after spend): <strong>${{ roi.net_gain }}</strong></li>
+          <li>ROI multiple: <strong>{% if roi.roi_multiple is not None %}{{ roi.roi_multiple }}×{% else %}n/a{% endif %}</strong></li>
+        </ul>
+        <p class="small text-muted">Time-saved is self-reported; cross-check against the throughput trend.</p>
+      </div>
+      <div class="col-md-6">
+        <h2 class="h6 text-uppercase text-muted">Throughput cross-check</h2>
+        {% if throughput %}
+          <canvas class="av-chart"
+                  height="120"
+                  data-points='[{% for p in throughput.points %}{"x": "{{ p.period }}", "y": {{ p.value }} }{% if not forloop.last %},{% endif %}{% endfor %}]'
+                  data-label="PR throughput"></canvas>
+        {% endif %}
+      </div>
+    </div>
+    <p class="mt-3 small text-muted">
+      Survey response rate (latest closed run):
+    {% if response_rate is not None %}{{ response_rate }}%{% else %}no closed run yet{% endif %}.</p>
+  </div>
+{% endblock content %}

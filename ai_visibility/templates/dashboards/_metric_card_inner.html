@@ -1,0 +1,9 @@
+<h2 class="h6 text-muted">{{ card.name }}</h2>
+{% with last=card.points|last %}
+  <div class="d-flex align-items-baseline gap-2">
+    <span class="fs-4 fw-semibold">{% if last %}{{ last.value }}{% else %}—{% endif %}</span>
+    <span class="text-muted small">{{ card.unit }}</span>
+    {% if card.delta_pct is not None %}<span class="badge bg-light text-dark">{{ card.delta_pct }}% vs baseline</span>{% endif %}
+  </div>
+{% endwith %}
+{% include "dashboards/_chart.html" with series=card %}

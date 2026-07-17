@@ -1,0 +1,26 @@
+# Copy to group_vars/all.yml (or use an Ansible Vault file) and fill in.
+# Secrets should live in an encrypted vault, not plain text.
+
+app_dir: /opt/ai-visibility
+app_image: "ghcr.io/huwaizatahir2/ai-visibility"
+app_tag: "v0.1.0"
+app_domain: "ai-visibility.example.com"
+
+# --- Secrets (put these in an Ansible Vault file) ---
+django_secret_key: "CHANGE_ME"
+field_encryption_key: "CHANGE_ME_fernet_key"
+allowed_oauth_domains: "arbisoft.com"
+google_oauth_client_id: ""
+google_oauth_secret: ""
+
+# Database (from terraform output + SSM parameter)
+db_host: "ai-visibility-db.xxxx.us-east-1.rds.amazonaws.com"
+db_port: 5432
+db_name: "ai_visibility"
+db_user: "ai_visibility"
+db_password: "CHANGE_ME_from_ssm"
+
+# Email (SMTP)
+email_host: "smtp.example.com"
+email_host_user: ""
+email_host_password: ""

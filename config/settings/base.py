@@ -5,6 +5,7 @@ import ssl
 from pathlib import Path
 
 import environ
+from celery.schedules import crontab
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # ai_visibility/
@@ -49,7 +50,6 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 DATABASES = {"default": env.db("DATABASE_URL")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -309,6 +309,17 @@ CELERY_WORKER_SEND_TASK_EVENTS = True
 CELERY_TASK_SEND_SENT_EVENT = True
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#worker-hijack-root-logger
 CELERY_WORKER_HIJACK_ROOT_LOGGER = False
+# Periodic collection: run every enabled collector weekly (Mon 06:00).
+CELERY_BEAT_SCHEDULE = {
+    "run-all-collectors-weekly": {
+        "task": "ai_visibility.collectors.tasks.run_all_collectors",
+        "schedule": crontab(minute="0", hour="6", day_of_week="mon"),
+    },
+    "close-due-survey-runs-daily": {
+        "task": "ai_visibility.surveys.tasks.close_due_survey_runs",
+        "schedule": crontab(minute="0", hour="7"),
+    },
+}
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
@@ -336,7 +347,9 @@ SOCIALACCOUNT_FORMS = {"signup": "ai_visibility.users.forms.UserSocialSignupForm
 # ------------------------------------------------------------------------------
 # Fernet key used to encrypt integration credentials at rest (teams.IntegrationConfig).
 # Generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
-FIELD_ENCRYPTION_KEY = env("FIELD_ENCRYPTION_KEY")
+# Optional at the base layer so build-time management commands (e.g. compilemessages)
+# can run without secrets; production re-reads it strictly (see production.py).
+FIELD_ENCRYPTION_KEY = env("FIELD_ENCRYPTION_KEY", default="")
 # Restrict Google OAuth sign-in to these email domains. Empty list = open (OSS default).
 ALLOWED_OAUTH_DOMAINS = env.list("ALLOWED_OAUTH_DOMAINS", default=[])
 # Google provider registered via settings (no DB SocialApp needed).

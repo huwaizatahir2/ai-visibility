@@ -1,0 +1,18 @@
+<div class="row align-items-stretch border rounded p-2 mb-3">
+  <div class="col-md-6">
+    <span class="badge bg-primary mb-1">Speed</span>
+    {% with card=panel.metric %}
+      {% include "dashboards/_metric_card_inner.html" %}
+    {% endwith %}
+  </div>
+  <div class="col-md-6 border-start">
+    {% if panel.paired %}
+      <span class="badge bg-secondary mb-1">Quality counterweight</span>
+      {% with card=panel.paired %}
+        {% include "dashboards/_metric_card_inner.html" %}
+      {% endwith %}
+    {% else %}
+      <span class="text-muted small">No paired quality metric configured.</span>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,73 @@
+---
+# One-time host preparation: Docker, deploy user, firewall.
+- name: Bootstrap ai-visibility app host
+  hosts: app
+  become: true
+
+  tasks:
+    - name: Update apt cache and upgrade
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+
+    - name: Install prerequisites
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - ufw
+          - unattended-upgrades
+        state: present
+
+    - name: Add Docker GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+
+    - name: Install Docker Engine and Compose plugin
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+    - name: Ensure docker service is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Create deploy user in docker group
+      ansible.builtin.user:
+        name: deploy
+        groups: docker
+        shell: /bin/bash
+        append: true
+
+    - name: Allow SSH through ufw
+      community.general.ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+
+    - name: Allow HTTP/HTTPS through ufw
+      community.general.ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - "80"
+        - "443"
+
+    - name: Enable ufw
+      community.general.ufw:
+        state: enabled
+        policy: deny

@@ -1,0 +1,10 @@
+{% if freshness %}
+  <div class="mt-4 small text-muted">
+    <span class="me-2">Data freshness:</span>
+    {% for provider, when in freshness.items %}
+      <span class="badge {% if when %}bg-light text-dark{% else %}bg-warning text-dark{% endif %} me-1">
+        {{ provider }}: {% if when %}{{ when|date:"Y-m-d H:i" }}{% else %}never{% endif %}
+      </span>
+    {% endfor %}
+  </div>
+{% endif %}

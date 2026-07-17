@@ -1,0 +1,21 @@
+<div class="col-md-6 col-lg-4 mb-3">
+  <div class="card h-100">
+    <div class="card-body">
+      <h2 class="h6 text-muted">{{ card.name }}</h2>
+      {% with last=card.points|last %}
+        <div class="d-flex align-items-baseline gap-2">
+          <span class="fs-3 fw-semibold">{% if last %}{{ last.value }}{% else %}—{% endif %}</span>
+          <span class="text-muted small">{{ card.unit }}</span>
+          {% if card.delta_pct is not None %}
+            {% if card.direction == "higher" %}
+              <span class="badge {% if card.delta_pct >= 0 %}bg-success{% else %}bg-danger{% endif %}">{{ card.delta_pct }}% vs baseline</span>
+            {% else %}
+              <span class="badge {% if card.delta_pct <= 0 %}bg-success{% else %}bg-danger{% endif %}">{{ card.delta_pct }}% vs baseline</span>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% endwith %}
+      {% include "dashboards/_chart.html" with series=card %}
+    </div>
+  </div>
+</div>

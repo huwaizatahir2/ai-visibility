@@ -1,0 +1,32 @@
+---
+# Roll back to a previous image tag. Run: ansible-playbook rollback.yml -e app_tag=vX.Y.Z-1
+# Images are immutable and retained on GHCR; DB migrations are additive-only
+# (destructive changes require a two-release deprecation cycle).
+- name: Roll back ai-visibility
+  hosts: app
+  become: true
+
+  vars:
+    compose_file: "{{ app_dir }}/docker-compose.production.yml"
+
+  tasks:
+    - name: Pull the rollback image
+      community.docker.docker_image:
+        name: "{{ app_image }}:{{ app_tag }}"
+        source: pull
+
+    - name: Restart the stack on the rollback tag
+      ansible.builtin.command:
+        cmd: docker compose --env-file {{ app_dir }}/.env -f {{ compose_file }} up -d
+      environment:
+        AI_VISIBILITY_IMAGE: "{{ app_image }}:{{ app_tag }}"
+      changed_when: true
+
+    - name: Health check
+      ansible.builtin.uri:
+        url: "https://{{ app_domain }}/healthz/"
+        status_code: 200
+      register: health
+      retries: 10
+      delay: 6
+      until: health.status == 200
