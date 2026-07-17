@@ -23,6 +23,7 @@ urlpatterns = [
         "dashboards/",
         include("ai_visibility.dashboards.urls", namespace="dashboards"),
     ),
+    path("reports/", include("ai_visibility.reports.urls", namespace="reports")),
     path("surveys/", include("ai_visibility.surveys.urls", namespace="surveys")),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
