@@ -8,6 +8,14 @@ AI Visibility answers three questions about your team's use of AI coding tools (
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+## Demo
+
+A walkthrough of the DX Core 4 overview, the Utilization / Impact / Cost tabs (speed always paired with its quality counterweight), the monthly ROI report, and team settings:
+
+![AI Visibility walkthrough](docs/assets/demo.gif)
+
+▶️ **[Watch the full walkthrough (MP4)](docs/assets/demo.mp4)** · reproduce it locally with `python manage.py seed_demo` (see [Quickstart](#quickstart-local-docker)).
+
 ---
 
 ## Why
@@ -69,9 +77,14 @@ docker compose -f docker-compose.local.yml build
 docker compose -f docker-compose.local.yml up -d
 docker compose -f docker-compose.local.yml run --rm django python manage.py migrate
 docker compose -f docker-compose.local.yml run --rm django python manage.py createsuperuser
+
+# Optional: load the demo team from the walkthrough above (metrics, baseline, integrations, survey)
+docker compose -f docker-compose.local.yml run --rm django python manage.py seed_demo
 ```
 
 App: <http://localhost:8000> · Mailpit (emails): <http://localhost:8025>
+
+After `seed_demo`, sign in as **demo@arbisoft.com** / **DevEx-2026-demo** and open `/dashboards/xiangqi/`.
 
 Run the tests:
 

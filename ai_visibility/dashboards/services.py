@@ -21,20 +21,21 @@ def _check_group(team) -> None:
 def metric_series(
     team,
     metric_key: str,
-    granularity: str = "weekly",
+    granularity: str | None = None,
     limit: int = DEFAULT_LIMIT,
 ) -> dict:
-    """Time series for a metric with its baseline and delta, guardrailed."""
+    """Time series for a metric with its baseline and delta, guardrailed.
+
+    ``granularity`` is optional: when omitted the metric's natural cadence is
+    used (system metrics are weekly, survey metrics quarterly), so a single
+    view can mix both — e.g. the DX Core 4 overview.
+    """
     _check_group(team)
     metric = MetricDefinition.objects.get(key=metric_key)
-    snaps = list(
-        MetricSnapshot.objects.filter(
-            team=team,
-            metric=metric,
-            granularity=granularity,
-            dimensions={},
-        ).order_by("-period_start")[:limit],
-    )
+    query = MetricSnapshot.objects.filter(team=team, metric=metric, dimensions={})
+    if granularity is not None:
+        query = query.filter(granularity=granularity)
+    snaps = list(query.order_by("-period_start")[:limit])
     snaps.reverse()
 
     baseline = Baseline.objects.filter(team=team).order_by("-version").first()
