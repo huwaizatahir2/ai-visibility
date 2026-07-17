@@ -28,6 +28,7 @@ dependencies = [
     { name = "pyjwt" },
     { name = "python-slugify" },
     { name = "redis" },
+    { name = "requests" },
     { name = "whitenoise" },
 ]
 
@@ -79,6 +80,7 @@ requires-dist = [
     { name = "pyjwt", specifier = ">=2.8" },
     { name = "python-slugify", specifier = "==8.0.4" },
     { name = "redis", specifier = "==8.0.1" },
+    { name = "requests", specifier = ">=2.32" },
     { name = "whitenoise", specifier = "==6.12.0" },
 ]
 
