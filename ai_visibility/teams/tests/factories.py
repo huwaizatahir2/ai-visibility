@@ -3,6 +3,7 @@ from __future__ import annotations
 import factory
 from factory.django import DjangoModelFactory
 
+from ai_visibility.teams.models import IntegrationConfig
 from ai_visibility.teams.models import Membership
 from ai_visibility.teams.models import Team
 from ai_visibility.users.tests.factories import UserFactory
@@ -22,3 +23,11 @@ class MembershipFactory(DjangoModelFactory):
 
     class Meta:
         model = Membership
+
+
+class IntegrationConfigFactory(DjangoModelFactory):
+    team = factory.SubFactory(TeamFactory)
+    provider = "github"
+
+    class Meta:
+        model = IntegrationConfig
