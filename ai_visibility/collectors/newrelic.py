@@ -42,6 +42,8 @@ class NewRelicCollector(BaseCollector):
         "cc_lines_of_code",
         "cc_cost_usd",
         "cc_accept_rate",
+        "change_failure_rate",
+        "lead_time_hours",
     ]
 
     def _nrql(self, nrql: str) -> list[dict]:
@@ -63,6 +65,24 @@ class NewRelicCollector(BaseCollector):
 
     def _scalar(self, nrql: str) -> float:
         return self._nrql(nrql)[0]["n"] or 0
+
+    def _dora_metrics(self, window: str) -> tuple[Decimal, Decimal]:
+        """Change-failure rate and lead time from Change Tracking deployments.
+
+        Expects New Relic ``Deployment`` events (Change Tracking) carrying a
+        numeric ``leadTimeSeconds`` attribute (commit -> deploy), and open
+        incidents in ``NrAiIncident``. CFR = incidents / deployments.
+        """
+        deploys = self._scalar(f"SELECT count(*) AS n FROM Deployment{window}")
+        incidents = self._scalar(
+            f"SELECT count(*) AS n FROM NrAiIncident WHERE event = 'open'{window}",
+        )
+        lead_seconds = self._nrql(
+            f"SELECT median(leadTimeSeconds) AS n FROM Deployment{window}",
+        )[0]["n"]
+        cfr = _q(incidents * 100 / deploys) if deploys else Decimal("0")
+        lead_hours = _q(lead_seconds / 3600) if lead_seconds else Decimal("0")
+        return cfr, lead_hours
 
     def collect(self, period_start, period_end) -> list[MetricValue]:
         window = ""
@@ -100,6 +120,7 @@ class NewRelicCollector(BaseCollector):
             else Decimal("0")
         )
         wau = _q(active * 100 / members) if members else Decimal("0")
+        change_failure_rate, lead_time_hours = self._dora_metrics(window)
         return [
             MetricValue("cc_wau_pct", wau),
             MetricValue("cc_sessions", _q(sessions)),
@@ -107,4 +128,6 @@ class NewRelicCollector(BaseCollector):
             MetricValue("cc_lines_of_code", _q(loc)),
             MetricValue("cc_cost_usd", _q(cost)),
             MetricValue("cc_accept_rate", accept_rate),
+            MetricValue("change_failure_rate", change_failure_rate),
+            MetricValue("lead_time_hours", lead_time_hours),
         ]

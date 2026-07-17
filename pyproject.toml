@@ -1,5 +1,5 @@
 [project]
-name = "ai_visibility"
+name = "ai-visibility"
 version = "0.1.0"
 description = "Self-hosted platform measuring AI coding-tool impact on developer productivity (DX Utilization/Impact/Cost framework)."
 readme = "README.md"
@@ -33,8 +33,8 @@ dependencies = [
   "psycopg[c]==3.3.4",
   "pyjwt>=2.8",
   "python-slugify==8.0.4",
-  "requests>=2.32",
   "redis==8.0.1",
+  "requests>=2.32",
   "whitenoise==6.12.0",
 ]
 
@@ -65,16 +65,17 @@ dev = [
 
 # ==== djLint ====
 [tool.djlint]
+profile = "django"
+include = "H017,H035"
+indent = 2
+max_line_length = 119
 blank_line_after_tag = "load,extends"
 close_void_tags = true
 format_css = true
 format_js = true
+# H021: inline styles are acceptable for a few internal-tool layout widths.
 # TODO: remove T002 when fixed https://github.com/djlint/djLint/issues/687
-ignore = "H006,H030,H031,T002"
-include = "H017,H035"
-indent = 2
-max_line_length = 119
-profile = "django"
+ignore = "H006,H021,H030,H031,T002"
 css.indent_size = 2
 js.indent_size = 2
 
@@ -85,7 +86,6 @@ extend-exclude = [
   "*/migrations/*.py",
   "staticfiles/*",
 ]
-
 lint.select = [
   "A",
   "ASYNC",
@@ -145,7 +145,6 @@ lint.ignore = [
   # Deactivated because it can make the code slow:
   # https://github.com/astral-sh/ruff/issues/7871
 ]
-lint.isort.force-single-line = true
 # Test files use dummy secrets, magic-value assertions, and injected fixtures.
 lint.per-file-ignores."**/tests/**" = [
   "ARG001",
@@ -156,10 +155,30 @@ lint.per-file-ignores."**/tests/**" = [
   "S107",
   "SLF001",
 ]
+lint.isort.force-single-line = true
 
 # ==== pyproject-fmt ====
 [tool.pyproject-fmt]
 keep_full_version = true
+
+# ==== mypy ====
+[tool.mypy]
+ignore_missing_imports = true
+python_version = "3.14"
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+plugins = [
+  "mypy_django_plugin.main",
+]
+warn_unused_configs = true
+overrides = [
+  # Django migrations should not produce any errors:
+  { module = "*.migrations.*", ignore_errors = true },
+]
+
+[tool.django-stubs]
+django_settings_module = "config.settings.test"
 
 # ==== pytest ====
 [tool.pytest]
@@ -174,28 +193,8 @@ python_files = [
   "test_*.py",
 ]
 
+[tool.coverage]
 # ==== Coverage ====
-[tool.coverage.run]
-include = [ "ai_visibility/**" ]
-omit = [ "*/migrations/*", "*/tests/*" ]
-plugins = [ "django_coverage_plugin" ]
-
-# ==== mypy ====
-[tool.mypy]
-python_version = "3.14"
-check_untyped_defs = true
-ignore_missing_imports = true
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-plugins = [
-  "mypy_django_plugin.main",
-]
-
-[[tool.mypy.overrides]]
-# Django migrations should not produce any errors:
-module = "*.migrations.*"
-ignore_errors = true
-
-[tool.django-stubs]
-django_settings_module = "config.settings.test"
+run.include = [ "ai_visibility/**" ]
+run.omit = [ "*/migrations/*", "*/tests/*" ]
+run.plugins = [ "django_coverage_plugin" ]

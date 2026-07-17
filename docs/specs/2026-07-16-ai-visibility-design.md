@@ -131,7 +131,9 @@ Idempotency: collectors upsert on the unique snapshot key — re-running a perio
 
 ## 10. Out of scope (v1)
 
-- Jira collector (interface ready, phase 2), Slack bot delivery, per-PR complexity adjustment, real DXI licensing, GitLab/other VCS collectors (pluggable interface makes them contributions), Grafana embedding.
+- Slack bot delivery, per-PR complexity adjustment, real DXI licensing, GitLab/other VCS collectors (pluggable interface makes them contributions), Grafana embedding.
+
+**Now implemented (originally deferred):** the Jira collector (work-item throughput + lead time) and `change_failure_rate` / `lead_time_hours` via New Relic Change Tracking deployments + incidents.
 
 ## 11. Success criteria
 

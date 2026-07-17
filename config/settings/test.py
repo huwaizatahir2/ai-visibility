@@ -13,6 +13,11 @@ SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
     default="5bY8sNePkCbuqmDkiPTRxtfigZWNhefkdmpirrZWEwdK0DmYkR4czmYucB8Nn5e2",
 )
+# Deterministic Fernet key so tests run without a provided secret.
+FIELD_ENCRYPTION_KEY = env(
+    "FIELD_ENCRYPTION_KEY",
+    default="i2FcYPPYPXtn1cfX2veDD-EUISC1GcLlSkjs4dFRPzI=",
+)
 # https://docs.djangoproject.com/en/dev/ref/settings/#test-runner
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
