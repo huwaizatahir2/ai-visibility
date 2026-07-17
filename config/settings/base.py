@@ -78,12 +78,19 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.mfa",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     "django_celery_beat",
+    "django_htmx",
 ]
 
 LOCAL_APPS = [
     "ai_visibility.users",
-    # Your stuff: custom apps go here
+    "ai_visibility.teams",
+    "ai_visibility.metrics",
+    "ai_visibility.collectors",
+    "ai_visibility.surveys",
+    "ai_visibility.dashboards",
+    "ai_visibility.reports",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -138,6 +145,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
@@ -324,3 +332,22 @@ SOCIALACCOUNT_FORMS = {"signup": "ai_visibility.users.forms.UserSocialSignupForm
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# ai-visibility
+# ------------------------------------------------------------------------------
+# Fernet key used to encrypt integration credentials at rest (teams.IntegrationConfig).
+# Generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+FIELD_ENCRYPTION_KEY = env("FIELD_ENCRYPTION_KEY")
+# Restrict Google OAuth sign-in to these email domains. Empty list = open (OSS default).
+ALLOWED_OAUTH_DOMAINS = env.list("ALLOWED_OAUTH_DOMAINS", default=[])
+# Google provider registered via settings (no DB SocialApp needed).
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": env("GOOGLE_OAUTH_CLIENT_ID", default=""),
+            "secret": env("GOOGLE_OAUTH_SECRET", default=""),
+            "key": "",
+        },
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+    },
+}

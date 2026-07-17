@@ -10,12 +10,14 @@ dependencies = [
     { name = "argon2-cffi" },
     { name = "celery" },
     { name = "crispy-bootstrap5" },
+    { name = "cryptography" },
     { name = "django" },
     { name = "django-allauth", extra = ["mfa"] },
     { name = "django-anymail" },
     { name = "django-celery-beat" },
     { name = "django-crispy-forms" },
     { name = "django-environ" },
+    { name = "django-htmx" },
     { name = "django-model-utils" },
     { name = "django-redis" },
     { name = "flower" },
@@ -23,6 +25,7 @@ dependencies = [
     { name = "hiredis" },
     { name = "pillow" },
     { name = "psycopg", extra = ["c"] },
+    { name = "pyjwt" },
     { name = "python-slugify" },
     { name = "redis" },
     { name = "whitenoise" },
@@ -45,6 +48,7 @@ dev = [
     { name = "pytest" },
     { name = "pytest-django" },
     { name = "pytest-sugar" },
+    { name = "responses" },
     { name = "ruff" },
     { name = "sphinx" },
     { name = "sphinx-autobuild" },
@@ -57,12 +61,14 @@ requires-dist = [
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "celery", specifier = "==5.6.3" },
     { name = "crispy-bootstrap5", specifier = "==2026.3" },
+    { name = "cryptography", specifier = ">=44" },
     { name = "django", specifier = "==6.0.7" },
     { name = "django-allauth", extras = ["mfa"], specifier = "==65.18.0" },
     { name = "django-anymail", specifier = "==15.0" },
     { name = "django-celery-beat", specifier = "==2.9.0" },
     { name = "django-crispy-forms", specifier = "==2.6" },
     { name = "django-environ", specifier = "==0.14.0" },
+    { name = "django-htmx", specifier = ">=1.19" },
     { name = "django-model-utils", specifier = "==5.0.0" },
     { name = "django-redis", specifier = "==7.0.0" },
     { name = "flower", specifier = "==2.0.1" },
@@ -70,6 +76,7 @@ requires-dist = [
     { name = "hiredis", specifier = "==3.4.0" },
     { name = "pillow", specifier = "==12.3.0" },
     { name = "psycopg", extras = ["c"], specifier = "==3.3.4" },
+    { name = "pyjwt", specifier = ">=2.8" },
     { name = "python-slugify", specifier = "==8.0.4" },
     { name = "redis", specifier = "==8.0.1" },
     { name = "whitenoise", specifier = "==6.12.0" },
@@ -92,6 +99,7 @@ dev = [
     { name = "pytest", specifier = "==9.1.1" },
     { name = "pytest-django", specifier = "==4.12.0" },
     { name = "pytest-sugar", specifier = "==1.1.1" },
+    { name = "responses", specifier = ">=0.25" },
     { name = "ruff", specifier = "==0.15.22" },
     { name = "sphinx", specifier = "==9.1.0" },
     { name = "sphinx-autobuild", specifier = "==2025.8.25" },
@@ -682,6 +690,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/6d/b3/ed0f54ed706ec0b54fd251cc0364a249c6cd6c6ec97f04dc34be5e929eac/django_extensions-4.1.tar.gz", hash = "sha256:7b70a4d28e9b840f44694e3f7feb54f55d495f8b3fa6c5c0e5e12bcb2aa3cdeb", size = 283078, upload-time = "2025-04-11T01:15:39.617Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/64/96/d967ca440d6a8e3861120f51985d8e5aec79b9a8bdda16041206adfe7adc/django_extensions-4.1-py3-none-any.whl", hash = "sha256:0699a7af28f2523bf8db309a80278519362cd4b6e1fd0a8cd4bf063e1e023336", size = 232980, upload-time = "2025-04-11T01:15:37.701Z" },
+]
+
+[[package]]
+name = "django-htmx"
+version = "1.28.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/47/d9/b31339fae8ede6a7cb0b9facaefe2ee4fc01d9f37a31a3dc03759765a2c3/django_htmx-1.28.0.tar.gz", hash = "sha256:699e229de0bbf19b3ee1a5d419702f5c154fa956e6921fec89faa7401b99e536", size = 100946, upload-time = "2026-07-12T22:19:19.589Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/20/d5/71b3a206f7a2135e2ab4a789be143a00222b52d22729c84f480915049e94/django_htmx-1.28.0-py3-none-any.whl", hash = "sha256:e6911acccf3e7905d511c4fd6ab86fe06572205e80a0f32ca7aa94a115ae0619", size = 98588, upload-time = "2026-07-12T22:19:18.225Z" },
 ]
 
 [[package]]
@@ -1430,6 +1451,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pyjwt"
+version = "2.13.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3b/81/58d0ac84e1ef3a3843791d6954d94c0b33d526c75eeb1efbce9d0a4c4077/pyjwt-2.13.0.tar.gz", hash = "sha256:41571c89ca91598c79e8ef18a2d07367d4810fbbd6f637794879baf1b7703423", size = 107515, upload-time = "2026-05-21T19:54:36.618Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a3/5e/ecf12fdb62546d64385c158514e9b2b671f7832108ef2ecd2020ce0af2d1/pyjwt-2.13.0-py3-none-any.whl", hash = "sha256:66adcc2aff09b3f1bbd95fc1e1577df8ac8723c978552fd43304c8a290ac5728", size = 31274, upload-time = "2026-05-21T19:54:35.362Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "9.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1625,6 +1655,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ac/c3/e2a2b89f2d3e2179abd6d00ebd70bff6273f37fb3e0cc209f48b39d00cbf/requests-2.34.2.tar.gz", hash = "sha256:f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed", size = 142856, upload-time = "2026-05-14T19:25:27.735Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl", hash = "sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0", size = 73075, upload-time = "2026-05-14T19:25:26.443Z" },
+]
+
+[[package]]
+name = "responses"
+version = "0.26.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyyaml" },
+    { name = "requests" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f0/1a/4af3e6d659394b809838490b144e4ab8d7ed3b9fecc7ca78f5d2f79b1a3d/responses-0.26.2.tar.gz", hash = "sha256:9c9259b46a8349197edebf43cfa68a87e1a2802ef503ff8b2fecbabc0b45afd8", size = 84030, upload-time = "2026-07-03T16:44:50.325Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7c/28/693e1d9ebf72baa062ded80d837a035b86ce75eda5a269379e9e2b1008a8/responses-0.26.2-py3-none-any.whl", hash = "sha256:6fdfeabd58e5ec473b98dfe02e6d46d3173bd8dd573eff2ccccf1a05a5135364", size = 35609, upload-time = "2026-07-03T16:44:49.1Z" },
 ]
 
 [[package]]

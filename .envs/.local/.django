@@ -12,3 +12,12 @@ REDIS_URL=redis://redis:6379/0
 # Flower
 CELERY_FLOWER_USER=yiNwsVdWxubpsyHkNYaqnYupUCzfLrYr
 CELERY_FLOWER_PASSWORD=rvky1NoLOsNu20VSdhI6pH1dLPgxfcsh76QiSGFd3jeoo98h3WPIZgEJt1ohXAup
+
+# ai-visibility
+# ------------------------------------------------------------------------------
+FIELD_ENCRYPTION_KEY=i2FcYPPYPXtn1cfX2veDD-EUISC1GcLlSkjs4dFRPzI=
+# Comma-separated allowlist for Google OAuth sign-in; empty = open
+ALLOWED_OAUTH_DOMAINS=
+# Google OAuth app credentials (leave blank to disable Google login locally)
+GOOGLE_OAUTH_CLIENT_ID=
+GOOGLE_OAUTH_SECRET=
