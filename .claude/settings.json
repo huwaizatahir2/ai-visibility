@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init *)",
+      "Bash(pipx --version)",
+      "Bash(docker info *)",
+      "Bash(gh --version)",
+      "Bash(stat -f \"%N %Sp %Su %Sg\" /Users/huwaiza.tahir/.local /Users/huwaiza.tahir/.local/pipx /Users/huwaiza.tahir/.local/pipx/.cache 2>&1)",
+      "Read(//Users/huwaiza.tahir/.local/**)",
+      "Bash(pipx run *)",
+      "Bash(python3 -c ' *)",
+      "Bash(PIPX_HOME=/private/tmp/claude-502/-Users-huwaiza-tahir-work-projects-ai-visibility/f13243b0-605c-4a52-abe9-a9f0bd83c410/scratchpad/.pipxhome PIPX_BIN_DIR=/private/tmp/claude-502/-Users-huwaiza-tahir-work-projects-ai-visibility/f13243b0-605c-4a52-abe9-a9f0bd83c410/scratchpad/.pipxhome/bin pipx run --no-cache cookiecutter --help)",
+      "Bash(export PIPX_HOME=\"$SCRATCH/.pipxhome\")",
+      "Bash(export PIPX_BIN_DIR=\"$SCRATCH/.pipxhome/bin\")",
+      "Bash(export COOKIECUTTER_CONFIG=\"\")",
+      "Bash(rm -rf ~/.cookiecutters/cookiecutter-django)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(find /private/tmp/claude-502/-Users-huwaiza-tahir-work-projects-ai-visibility/f13243b0-605c-4a52-abe9-a9f0bd83c410/scratchpad/ai_visibility -maxdepth 1 -iname *compose* -o -iname *.yml -maxdepth 1)",
+      "Bash(rtk rsync *)"
+    ]
+  }
+}

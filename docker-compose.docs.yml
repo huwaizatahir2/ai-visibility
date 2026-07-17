@@ -1,0 +1,17 @@
+services:
+  docs:
+    image: ai_visibility_local_docs
+    container_name: ai_visibility_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - /app/.venv
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./ai_visibility:/app/ai_visibility:z
+    ports:
+      - '9000:9000'
+    command: /start-docs
