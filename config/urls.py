@@ -19,6 +19,10 @@ urlpatterns = [
     path("users/", include("ai_visibility.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # ai-visibility apps
+    path(
+        "dashboards/",
+        include("ai_visibility.dashboards.urls", namespace="dashboards"),
+    ),
     path("surveys/", include("ai_visibility.surveys.urls", namespace="surveys")),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),

@@ -1,0 +1,7 @@
+{% extends "dashboards/_base.html" %}
+{% block dashboard %}
+  <p class="text-muted">Is it worth it? AI spend over time. The monthly report has the full ROI breakdown.</p>
+  <div class="row">
+    {% for card in cards %}{% include "dashboards/_metric_card.html" %}{% endfor %}
+  </div>
+{% endblock dashboard %}
