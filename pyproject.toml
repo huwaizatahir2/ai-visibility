@@ -144,6 +144,15 @@ lint.ignore = [
   # https://github.com/astral-sh/ruff/issues/7871
 ]
 lint.isort.force-single-line = true
+# Test files use dummy secrets, magic-value assertions, and injected fixtures.
+lint.per-file-ignores."**/tests/**" = [
+  "ARG001",
+  "PLR0913",
+  "PLR2004",
+  "S105",
+  "S106",
+  "S107",
+]
 
 # ==== pyproject-fmt ====
 [tool.pyproject-fmt]
