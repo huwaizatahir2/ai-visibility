@@ -27,7 +27,7 @@ Internet ──► Elastic IP ──► EC2 t3.small (Ubuntu 24.04)
                              ├── celerybeat
                              └── redis
                                    │
-                             RDS PostgreSQL 16 (db.t4g.micro, private subnet)
+                             RDS PostgreSQL 18 (db.t4g.micro, private subnet)
 ```
 
 - Docker Compose production stack (cookiecutter-django's `docker-compose.production.yml`, Postgres service removed in favor of RDS).
@@ -60,7 +60,7 @@ infra/
 
 - **State:** S3 bucket + DynamoDB lock table (created once per org account, documented in runbook).
 - **Workspaces:** one per org (`terraform workspace new arbisoft`). Same module, different tfvars.
-- **Resources:** VPC with one public + one private subnet pair, EC2 with key pair, Elastic IP, RDS Postgres 16 (private, SG allows 5432 from EC2 SG only), security groups (22 from `admin_cidr` only; 80/443 world), optional Route53 record if `domain` var set.
+- **Resources:** VPC with one public + one private subnet pair, EC2 with key pair, Elastic IP, RDS Postgres 18 (private, SG allows 5432 from EC2 SG only), security groups (22 from `admin_cidr` only; 80/443 world), optional Route53 record if `domain` var set.
 - **Secrets:** none in Terraform — RDS master password generated via `random_password`, written to SSM Parameter Store (SecureString); Ansible reads it from there.
 
 ## 5. Ansible (configuration + deploy)

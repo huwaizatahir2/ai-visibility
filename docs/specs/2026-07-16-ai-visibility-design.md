@@ -31,7 +31,7 @@ The platform answers three questions, always paired so no metric is reported alo
 ## 3. Stack
 
 - **Python 3.12, Django 5.x** (whatever current cookiecutter-django pins)
-- **PostgreSQL 16** — relational + metric time-series (no separate TSDB at this scale)
+- **PostgreSQL 18** — relational + metric time-series (no separate TSDB at this scale)
 - **Celery + Celery Beat + Redis** — scheduled collectors, async jobs
 - **HTMX + Chart.js + Tailwind CSS** — server-rendered dashboards
 - **django-allauth** — Google OAuth + password
@@ -123,7 +123,7 @@ Idempotency: collectors upsert on the unique snapshot key — re-running a perio
 
 ## 9. Deployment (summary — full strategy in separate doc)
 
-- `infra/terraform/` — module: VPC, EC2 t3.small, RDS Postgres 16, security groups, Elastic IP, S3 backend for state. One workspace per org deployment.
+- `infra/terraform/` — module: VPC, EC2 t3.small, RDS Postgres 18, security groups, Elastic IP, S3 backend for state. One workspace per org deployment.
 - `infra/ansible/` — playbooks: bootstrap (docker install, user, firewall), deploy (pull image tag, env render from vault, compose up, migrate, healthcheck), rollback.
 - GitHub Actions: CI on PR; on tag — build/push image (GHCR) → Ansible deploy.
 - New Arbisoft team = row in `teams` (same instance). New org = new Terraform workspace.
