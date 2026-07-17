@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block title %}{{ run.template.name }}{% endblock title %}
 {% block content %}
   <div class="container py-4" style="max-width: 640px;">
@@ -12,17 +13,32 @@
           {% if question.qtype == "likert" %}
             <div class="btn-group d-block" role="group">
               {% for n in "12345" %}
-                <input type="radio" class="btn-check" name="q_{{ question.id }}"
-                       id="q_{{ question.id }}_{{ n }}" value="{{ n }}" required>
+                <input type="radio"
+                       class="btn-check"
+                       name="q_{{ question.id }}"
+                       id="q_{{ question.id }}_{{ n }}"
+                       value="{{ n }}"
+                       required />
                 <label class="btn btn-outline-primary" for="q_{{ question.id }}_{{ n }}">{{ n }}</label>
               {% endfor %}
             </div>
           {% elif question.qtype == "percent" %}
-            <input type="number" min="0" max="100" step="1" class="form-control"
-                   id="q_{{ question.id }}" name="q_{{ question.id }}" required>
+            <input type="number"
+                   min="0"
+                   max="100"
+                   step="1"
+                   class="form-control"
+                   id="q_{{ question.id }}"
+                   name="q_{{ question.id }}"
+                   required />
           {% else %}
-            <input type="number" min="0" step="0.5" class="form-control"
-                   id="q_{{ question.id }}" name="q_{{ question.id }}" required>
+            <input type="number"
+                   min="0"
+                   step="0.5"
+                   class="form-control"
+                   id="q_{{ question.id }}"
+                   name="q_{{ question.id }}"
+                   required />
           {% endif %}
         </div>
       {% endfor %}

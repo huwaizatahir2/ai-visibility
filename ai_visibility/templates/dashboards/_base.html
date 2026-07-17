@@ -1,21 +1,28 @@
 {% extends "base.html" %}
+
 {% block title %}{{ team.name }} · Dashboards{% endblock title %}
 {% block content %}
   <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h1 class="h4 mb-0">{{ team.name }}</h1>
-      <a class="btn btn-sm btn-outline-secondary" href="{% url 'teams:settings' team.slug %}">Settings</a>
+      <a class="btn btn-sm btn-outline-secondary"
+         href="{% url 'teams:settings' team.slug %}">Settings</a>
     </div>
     <ul class="nav nav-tabs mb-4">
-      <li class="nav-item"><a class="nav-link {% if active_tab == 'overview' %}active{% endif %}" href="{% url 'dashboards:overview' team.slug %}">DX Core 4</a></li>
-      <li class="nav-item"><a class="nav-link {% if active_tab == 'utilization' %}active{% endif %}" href="{% url 'dashboards:utilization' team.slug %}">Utilization</a></li>
-      <li class="nav-item"><a class="nav-link {% if active_tab == 'impact' %}active{% endif %}" href="{% url 'dashboards:impact' team.slug %}">Impact</a></li>
-      <li class="nav-item"><a class="nav-link {% if active_tab == 'cost' %}active{% endif %}" href="{% url 'dashboards:cost' team.slug %}">Cost</a></li>
+      <li class="nav-item"><a class="nav-link {% if active_tab == 'overview' %}active{% endif %}"
+   href="{% url 'dashboards:overview' team.slug %}">DX Core 4</a></li>
+      <li class="nav-item"><a class="nav-link {% if active_tab == 'utilization' %}active{% endif %}"
+   href="{% url 'dashboards:utilization' team.slug %}">Utilization</a></li>
+      <li class="nav-item"><a class="nav-link {% if active_tab == 'impact' %}active{% endif %}"
+   href="{% url 'dashboards:impact' team.slug %}">Impact</a></li>
+      <li class="nav-item"><a class="nav-link {% if active_tab == 'cost' %}active{% endif %}"
+   href="{% url 'dashboards:cost' team.slug %}">Cost</a></li>
     </ul>
     {% if too_small %}
       {% include "dashboards/_guardrail.html" %}
     {% else %}
-      {% block dashboard %}{% endblock dashboard %}
+      {% block dashboard %}
+      {% endblock dashboard %}
     {% endif %}
     {% include "dashboards/_freshness.html" %}
   </div>

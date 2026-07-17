@@ -1,7 +1,10 @@
 {% extends "dashboards/_base.html" %}
+
 {% block dashboard %}
   <p class="text-muted">The five DX Core 4 headline numbers, each shown against your captured baseline.</p>
   <div class="row">
-    {% for card in cards %}{% include "dashboards/_metric_card.html" %}{% endfor %}
+    {% for card in cards %}
+      {% include "dashboards/_metric_card.html" %}
+    {% endfor %}
   </div>
 {% endblock dashboard %}
