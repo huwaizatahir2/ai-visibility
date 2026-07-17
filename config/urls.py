@@ -18,8 +18,8 @@ urlpatterns = [
     # User management
     path("users/", include("ai_visibility.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
-    # ...
+    # ai-visibility apps
+    path("surveys/", include("ai_visibility.surveys.urls", namespace="surveys")),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]

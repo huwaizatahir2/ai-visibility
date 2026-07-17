@@ -77,7 +77,9 @@ class SurveyToken(models.Model):
 
 class Response(models.Model):
     run = models.ForeignKey(
-        SurveyRun, on_delete=models.CASCADE, related_name="responses",
+        SurveyRun,
+        on_delete=models.CASCADE,
+        related_name="responses",
     )
     submitted_at = models.DateTimeField(auto_now_add=True)
     # Deliberately NO user/token FK — responses are anonymous.
@@ -88,7 +90,9 @@ class Response(models.Model):
 
 class Answer(models.Model):
     response = models.ForeignKey(
-        Response, on_delete=models.CASCADE, related_name="answers",
+        Response,
+        on_delete=models.CASCADE,
+        related_name="answers",
     )
     question = models.ForeignKey(Question, on_delete=models.PROTECT)
     value = models.DecimalField(max_digits=8, decimal_places=2)
