@@ -92,3 +92,32 @@ class MetricSnapshot(models.Model):
 
     def __str__(self) -> str:
         return f"{self.metric.key}={self.value} [{self.period_start}]"
+
+
+class Baseline(models.Model):
+    """Immutable snapshot of a team's metrics at a point in time.
+
+    Dashboards compute deltas against the latest baseline. Capturing again
+    creates a new version; earlier versions are kept.
+    """
+
+    team = models.ForeignKey(
+        "teams.Team",
+        on_delete=models.CASCADE,
+        related_name="baselines",
+    )
+    version = models.PositiveIntegerField()
+    captured_at = models.DateTimeField(auto_now_add=True)
+    # {metric_key: str(value)} — latest snapshot per metric at capture time.
+    values = models.JSONField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["team", "version"],
+                name="uniq_baseline_version",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.team} baseline v{self.version}"

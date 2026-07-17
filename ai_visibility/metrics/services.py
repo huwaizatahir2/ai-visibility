@@ -3,6 +3,9 @@ from __future__ import annotations
 import hashlib
 import json
 
+from django.db.models import Max
+
+from ai_visibility.metrics.models import Baseline
 from ai_visibility.metrics.models import MetricDefinition
 from ai_visibility.metrics.models import MetricSnapshot
 
@@ -41,3 +44,18 @@ def upsert_snapshot(  # noqa: PLR0913
         },
     )
     return obj
+
+
+def capture_baseline(team) -> Baseline:
+    """Freeze the latest value of each metric for the team as a new baseline."""
+    latest = {}
+    snapshots = (
+        MetricSnapshot.objects.filter(team=team)
+        .order_by("metric__key", "-period_start")
+        .distinct("metric__key")
+    )
+    for snap in snapshots:
+        latest[snap.metric.key] = str(snap.value)
+    current = Baseline.objects.filter(team=team).aggregate(m=Max("version"))["m"]
+    version = (current or 0) + 1
+    return Baseline.objects.create(team=team, version=version, values=latest)
