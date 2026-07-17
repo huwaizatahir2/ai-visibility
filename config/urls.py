@@ -19,6 +19,7 @@ urlpatterns = [
     path("users/", include("ai_visibility.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # ai-visibility apps
+    path("teams/", include("ai_visibility.teams.urls", namespace="teams")),
     path(
         "dashboards/",
         include("ai_visibility.dashboards.urls", namespace="dashboards"),
