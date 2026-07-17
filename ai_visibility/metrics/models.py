@@ -37,3 +37,58 @@ class MetricDefinition(models.Model):
 
     def __str__(self) -> str:
         return self.key
+
+
+class MetricSnapshot(models.Model):
+    """One value of one metric for one team over one period."""
+
+    class Granularity(models.TextChoices):
+        DAILY = "daily", "Daily"
+        WEEKLY = "weekly", "Weekly"
+        PER_RELEASE = "per_release", "Per release"
+        QUARTERLY = "quarterly", "Quarterly"
+
+    class Source(models.TextChoices):
+        SYSTEM = "system", "System"
+        SURVEY = "survey", "Survey"
+        MANUAL = "manual", "Manual"
+
+    team = models.ForeignKey(
+        "teams.Team",
+        on_delete=models.CASCADE,
+        related_name="snapshots",
+    )
+    metric = models.ForeignKey(MetricDefinition, on_delete=models.PROTECT)
+    period_start = models.DateField()
+    period_end = models.DateField()
+    granularity = models.CharField(max_length=15, choices=Granularity.choices)
+    value = models.DecimalField(max_digits=14, decimal_places=4)
+    dimensions = models.JSONField(default=dict, blank=True)
+    dimensions_hash = models.CharField(max_length=64, editable=False)
+    source = models.CharField(
+        max_length=10,
+        choices=Source.choices,
+        default=Source.SYSTEM,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "team",
+                    "metric",
+                    "period_start",
+                    "granularity",
+                    "dimensions_hash",
+                ],
+                name="uniq_snapshot_period",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["team", "metric", "period_start"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.metric.key}={self.value} [{self.period_start}]"
