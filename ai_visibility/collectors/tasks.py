@@ -6,6 +6,7 @@ from celery import shared_task
 from django.utils import timezone
 
 from ai_visibility.collectors import github  # noqa: F401  (registers collector)
+from ai_visibility.collectors import jira  # noqa: F401
 from ai_visibility.collectors import newrelic  # noqa: F401
 from ai_visibility.collectors import sonarqube  # noqa: F401
 from ai_visibility.collectors.base import REGISTRY

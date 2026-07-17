@@ -26,6 +26,12 @@ def _nrql_callback(request):
         results = [{"n": 1234}]
     elif "cost.usage" in nrql:
         results = [{"n": 42.5}]
+    elif "leadTimeSeconds" in nrql:
+        results = [{"n": 7200}]  # 2 hours
+    elif "NrAiIncident" in nrql:
+        results = [{"n": 1}]
+    elif "FROM Deployment" in nrql:
+        results = [{"n": 4}]  # 4 deploys
     else:  # code_edit_tool.decision
         results = [{"acc": 80, "total": 100}]
     body = {"data": {"actor": {"account": {"nrql": {"results": results}}}}}
@@ -55,4 +61,6 @@ def test_newrelic_collector_computes_usage_and_cost():
     assert values["cc_lines_of_code"] == Decimal("1234")
     assert values["cc_cost_usd"] == Decimal("42.5")
     assert values["cc_accept_rate"] == Decimal("80")
+    assert values["change_failure_rate"] == Decimal("25")  # 1 incident / 4 deploys
+    assert values["lead_time_hours"] == Decimal("2")  # 7200s / 3600
     assert set(values) == set(NewRelicCollector.metrics_produced)

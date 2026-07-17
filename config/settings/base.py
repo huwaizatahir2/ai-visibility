@@ -50,7 +50,6 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 DATABASES = {"default": env.db("DATABASE_URL")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -348,7 +347,9 @@ SOCIALACCOUNT_FORMS = {"signup": "ai_visibility.users.forms.UserSocialSignupForm
 # ------------------------------------------------------------------------------
 # Fernet key used to encrypt integration credentials at rest (teams.IntegrationConfig).
 # Generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
-FIELD_ENCRYPTION_KEY = env("FIELD_ENCRYPTION_KEY")
+# Optional at the base layer so build-time management commands (e.g. compilemessages)
+# can run without secrets; production re-reads it strictly (see production.py).
+FIELD_ENCRYPTION_KEY = env("FIELD_ENCRYPTION_KEY", default="")
 # Restrict Google OAuth sign-in to these email domains. Empty list = open (OSS default).
 ALLOWED_OAUTH_DOMAINS = env.list("ALLOWED_OAUTH_DOMAINS", default=[])
 # Google provider registered via settings (no DB SocialApp needed).

@@ -61,7 +61,7 @@
         {% if throughput %}
           <canvas class="av-chart"
                   height="120"
-                  data-points='[{% for p in throughput.points %}{"x":"{{ p.period }}","y":{{ p.value }}}{% if not forloop.last %},{% endif %}{% endfor %}]'
+                  data-points='[{% for p in throughput.points %}{"x": "{{ p.period }}", "y": {{ p.value }} }{% if not forloop.last %},{% endif %}{% endfor %}]'
                   data-label="PR throughput"></canvas>
         {% endif %}
       </div>

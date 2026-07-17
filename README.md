@@ -25,7 +25,7 @@ Adopting an AI coding tool without measurement leaves you with anecdote ("it fee
 ## Features
 
 - **Multi-tenant** — one deployment, many teams. Each team configures its own integrations; data is strictly team-scoped.
-- **Pluggable collectors** — scheduled jobs pull metrics from **GitHub** (PR throughput, cycle time, revert rate, % AI-assisted), **New Relic** (Claude Code OpenTelemetry usage/cost, change-failure signals), and **SonarQube** (new-code quality gate). Adding a source is a subclass + registration.
+- **Pluggable collectors** — scheduled jobs pull metrics from **GitHub** (PR throughput, cycle time, revert rate, % AI-assisted), **New Relic** (Claude Code OpenTelemetry usage/cost, plus DORA change-failure rate and lead time from Change Tracking deployments + incidents), **SonarQube** (new-code quality gate), and **Jira** (work-item throughput and lead time). Adding a source is a subclass + registration.
 - **In-app surveys** — DX Core 4 quarterly, DXI-lite (14 drivers), and pulse checks. **Anonymous by construction** — responses carry no link to the respondent.
 - **Baseline capture** — freeze your "before AI" numbers in one click; every chart shows the delta against it.
 - **Guardrails enforced in code** — no per-individual view exists; aggregates render only when a team has at least *N* contributing members (default 5); speed metrics render only beside their paired quality metric.
@@ -37,7 +37,8 @@ Adopting an AI coding tool without measurement leaves you with anecdote ("it fee
 Celery Beat ─► Collectors ─► MetricSnapshot (Postgres time-series) ─► Dashboards
    (weekly)     GitHub          ▲                                       (HTMX + Chart.js)
                 New Relic        │
-                SonarQube    Surveys ─► aggregated answers
+                SonarQube        │
+                Jira         Surveys ─► aggregated answers
 ```
 
 Django 6 monolith (server-rendered, HTMX + Chart.js + Bootstrap 5 — no SPA build step). Six domain apps:
